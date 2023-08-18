@@ -33,7 +33,7 @@ class pysweeper:
     def assignController(self, controller):
         self.controller = controller
 
-    def createBasicGame(self):
+    def createBasicGame(self, gameField):
         cols = 20
         rows = 20
         self.infoFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
@@ -43,9 +43,16 @@ class pysweeper:
         self.flagCounter = tk.Label(self.infoFrame, text="040", background="black", foreground="red")
         self.flagCounter.grid(row=0, column=0)
 
+        for i, row in enumerate(gameField):
+            print("This is row: " + str(row))
+            for k, spot in enumerate(row):
+                label = tk.Label(self.gameFrame, text=spot)
+                label.grid(row=i, column=k)
+    
         for row in range(rows):
             for col in range(cols):
                 button = tk.Button(self.gameFrame, width=1, height=1, text="", highlightbackground="gray")
+                button.configure(command=lambda bn=button: bn.destroy())
                 button.grid(row=row, column=col)
 
         self.infoFrame.grid(row=0, column=0)
