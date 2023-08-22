@@ -39,7 +39,7 @@ class pysweeper:
         self.infoFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
         self.gameFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
         self.gameFrame.grid_columnconfigure(0, weight=1)
-
+        # .count() mines and set flagCounter
         self.flagCounter = tk.Label(self.infoFrame, text="040", background="black", foreground="red")
         self.flagCounter.grid(row=0, column=0)
 
