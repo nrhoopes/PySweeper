@@ -9,8 +9,8 @@ class pyControl:
     def startGame(self):
         self.gui.clearFrame(self.gui.mainFrame)
 
-        self.gameField = self.__createField(20, 20, 0.15)
-        self.gui.createBasicGame(self.gameField)
+        self.gameField = self.__createField(20, 20, 0.10)
+        self.gui.createBasicGame(self.gameField, self.bombCount)
 
     def __createField(self, rows, cols, percentChanceOfBomb):
         field = []
