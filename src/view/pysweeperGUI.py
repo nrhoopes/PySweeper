@@ -45,7 +45,7 @@ class pysweeper:
         self.flagCounter = tk.Label(self.infoFrame, text="0" + str(bombCount), background="black", foreground="red", font=("", 25))
         self.flagCounter.grid(row=0, column=1, sticky="w")
 
-        restartButton = tk.Button(self.infoFrame, text="R", font=("", 25))
+        restartButton = tk.Button(self.infoFrame, text="R", font=("", 25), command=self.controller.startGame)
         restartButton.grid(row=0, column=2, padx=50)
 
         timerLabel = tk.Label(self.infoFrame, text="Time:", font=("", 25), highlightbackground="gray")
@@ -69,12 +69,12 @@ class pysweeper:
         self.gameFrame.grid(row=1, column=0)
         # 1 second to allow loading, 1 second to begin timer.
         # May be better to start timer on first button click in future...
-        self.root.after(2000, self.__updateTimer)
+        self.infoFrame.after(2000, self.__updateTimer)
 
     def __updateTimer(self):
         self.controller.time += 1
         self.timer.configure(text=str(self.controller.time))
-        self.root.after(1000, self.__updateTimer)
+        self.infoFrame.after(1000, self.__updateTimer)
 
 
 # pysweeper()

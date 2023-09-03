@@ -3,12 +3,12 @@ import random
 class pyControl:
     def __init__(self, GUI) -> None:
         self.gui = GUI
-        self.gameField = []
-        self.bombCount = 0
-        self.time = 0
 
     def startGame(self):
         self.gui.clearFrame(self.gui.mainFrame)
+        self.time = 0
+        self.bombCount = 0
+        self.gameField = []
 
         self.gameField = self.__createField(20, 20, 0.10)
         self.gui.createBasicGame(self.gameField, self.bombCount)
