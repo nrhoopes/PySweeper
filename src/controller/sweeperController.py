@@ -5,6 +5,7 @@ class pyControl:
         self.gui = GUI
         self.gameField = []
         self.bombCount = 0
+        self.time = 0
 
     def startGame(self):
         self.gui.clearFrame(self.gui.mainFrame)
