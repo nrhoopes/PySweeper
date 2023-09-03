@@ -50,7 +50,7 @@ class pysweeper:
 
         timerLabel = tk.Label(self.infoFrame, text="Time:", font=("", 25), highlightbackground="gray")
         timerLabel.grid(row=0, column=3, sticky="e")
-        self.timer = tk.Label(self.infoFrame, text=str("0"), background="black", foreground="red", font=("", 25))
+        self.timer = tk.Label(self.infoFrame, text=str("0"), background="black", foreground="red", font=("", 25), width=3, anchor="e")
         self.timer.grid(row=0, column=4, sticky="e")
 
         for i, row in enumerate(gameField):
