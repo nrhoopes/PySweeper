@@ -65,11 +65,27 @@ class pysweeper:
                 button.configure(command=lambda bn=button: bn.destroy())
                 button.grid(row=row, column=col)
 
+                # Right click/Middle click events depending on OS
+                button.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status))
+                button.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status))
+
         self.infoFrame.grid(row=0, column=0)
         self.gameFrame.grid(row=1, column=0)
         # 1 second to allow loading, 1 second to begin timer.
         # May be better to start timer on first button click in future...
         self.infoFrame.after(2000, self.__updateTimer)
+
+    def __setFlag(self, event, status):
+        if status:
+            #set flag
+            event.widget.configure(text="")
+            event.widget.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status))
+            event.widget.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status))
+        else:
+            #unset flag
+            event.widget.configure(text="F")
+            event.widget.bind("<Button-2>", lambda event, status=True: self.__setFlag(event, status))
+            event.widget.bind("<Button-3>", lambda event, status=True: self.__setFlag(event, status))
 
     def __updateTimer(self):
         self.controller.time += 1
