@@ -76,13 +76,13 @@ class pysweeper:
         self.infoFrame.after(2000, self.__updateTimer)
 
     def __setFlag(self, event, status):
-        if status:
-            #set flag
+        if status: # If flag is set
+            # unset flag
             event.widget.configure(text="")
             event.widget.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status))
             event.widget.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status))
-        else:
-            #unset flag
+        else: # If flag is not set
+            # set flag
             event.widget.configure(text="F")
             event.widget.bind("<Button-2>", lambda event, status=True: self.__setFlag(event, status))
             event.widget.bind("<Button-3>", lambda event, status=True: self.__setFlag(event, status))
