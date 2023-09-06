@@ -54,26 +54,44 @@ class pysweeper:
         self.timer.grid(row=0, column=4, sticky="e")
 
         for i, row in enumerate(gameField):
-            # print("This is row: " + str(row))
             for k, spot in enumerate(row):
-                label = tk.Label(self.gameFrame, text=spot)
+                label = tk.Label(self.gameFrame, text=spot[0])
                 label.grid(row=i, column=k)
     
         for row in range(rows):
             for col in range(cols):
                 button = tk.Button(self.gameFrame, width=1, height=1, text="", highlightbackground="gray")
-                button.configure(command=lambda bn=button: bn.destroy())
+                
+                if gameField[row][col][0] == 'B':
+                    button.configure(command=lambda bn=button: self.__gameLoss(bn))
+                elif gameField[row][col][0] == 0:
+                    button.configure(command=lambda bn=button, row=row, col=col: self.__searchZeroes(bn, [row, col]))
+                else: 
+                    button.configure(command=lambda bn=button: bn.destroy())
+
                 button.grid(row=row, column=col)
 
                 # Right click/Middle click events depending on OS
                 button.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status))
                 button.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status))
 
+                self.controller.setButtonTile(row, col, button)
+
+        # self.controller.printGameField()
         self.infoFrame.grid(row=0, column=0)
         self.gameFrame.grid(row=1, column=0)
         # 1 second to allow loading, 1 second to begin timer.
         # May be better to start timer on first button click in future...
         self.infoFrame.after(2000, self.__updateTimer)
+
+    def __gameLoss(self, button):
+        button.destroy()
+        print("BOMB!!")
+
+    def __searchZeroes(self, button, pos):
+        button.destroy()
+        print(pos[0])
+        print(pos[1])
 
     def __setFlag(self, event, status):
         if status: # If flag is set
