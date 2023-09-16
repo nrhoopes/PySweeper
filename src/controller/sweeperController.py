@@ -8,10 +8,13 @@ class pyControl:
         self.gui.clearFrame(self.gui.mainFrame)
         self.time = 0
         self.bombCount = 0
+        self.flagCount = 0
+        self.correctFlags = 0
         self.gameField = []
 
         self.gameField = self.__createField(20, 20, 0.10)
-        self.gui.createBasicGame(self.gameField, self.bombCount)
+        self.flagCount = self.bombCount
+        self.gui.createBasicGame(self.gameField, self.flagCount)
 
     def setButtonTile(self, row, col, button):
         self.gameField[row][col][1] = button
@@ -22,6 +25,21 @@ class pyControl:
     def printGameField(self):
         for row in self.gameField:
             print("This is Row: " + str(row))
+
+    def notifyFlagSet(self, row, col):
+        self.flagCount -= 1
+        self.gui.updateFlagCounter(self.flagCount)
+        if self.gameField[row][col] == 'B':
+            self.correctFlags += 1
+        
+            if self.correctFlags == self.bombCount:
+                print("Win!")
+    
+    def notifyFlagUnset(self, row, col):
+        self.flagCount += 1
+        self.gui.updateFlagCounter(self.flagCount)
+        if self.gameField[row][col] == 'B':
+            self.correctFlags -= 1
 
     def __createField(self, rows, cols, percentChanceOfBomb):
         field = []

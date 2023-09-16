@@ -72,8 +72,8 @@ class pysweeper:
                 button.grid(row=row, column=col)
 
                 # Right click/Middle click events depending on OS
-                button.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status))
-                button.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status))
+                button.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status, row, col))
+                button.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status, row, col))
 
                 self.controller.setButtonTile(row, col, button)
 
@@ -84,6 +84,12 @@ class pysweeper:
         # 1 second to allow loading, 1 second to begin timer.
         # May be better to start timer on first button click in future...
         self.infoFrame.after(2000, self.__updateTimer)
+    
+    def updateFlagCounter(self, flagCount):
+        if flagCount > 9:
+            self.flagCounter.configure(text="0" + str(flagCount))
+        else:
+            self.flagCounter.configure(text="00" + str(flagCount))
 
     def __gameLoss(self, button):
         button.destroy()
@@ -125,17 +131,22 @@ class pysweeper:
             if field[row-1][col-1][1] is not None:
                 field[row-1][col-1][1].invoke()
 
-    def __setFlag(self, event, status):
+    def __setFlag(self, event, status, row, col):
         if status: # If flag is set
             # unset flag
             event.widget.configure(text="")
-            event.widget.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status))
-            event.widget.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status))
+            event.widget.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status, row, col))
+            event.widget.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status, row, col))
+
+            self.controller.notifyFlagUnset(row, col)
         else: # If flag is not set
-            # set flag
-            event.widget.configure(text="F")
-            event.widget.bind("<Button-2>", lambda event, status=True: self.__setFlag(event, status))
-            event.widget.bind("<Button-3>", lambda event, status=True: self.__setFlag(event, status))
+            if self.controller.flagCount > 0: # If player still has flags remaining
+                # set flag
+                event.widget.configure(text="F")
+                event.widget.bind("<Button-2>", lambda event, status=True: self.__setFlag(event, status, row, col))
+                event.widget.bind("<Button-3>", lambda event, status=True: self.__setFlag(event, status, row, col))
+
+                self.controller.notifyFlagSet(row, col)
 
     def __updateTimer(self):
         self.controller.time += 1
