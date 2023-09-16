@@ -16,6 +16,9 @@ class pyControl:
     def setButtonTile(self, row, col, button):
         self.gameField[row][col][1] = button
 
+    def unsetButtonTile(self, row, col):
+        self.gameField[row][col][1] = None
+
     def printGameField(self):
         for row in self.gameField:
             print("This is Row: " + str(row))

@@ -55,7 +55,7 @@ class pysweeper:
 
         for i, row in enumerate(gameField):
             for k, spot in enumerate(row):
-                label = tk.Label(self.gameFrame, text=spot[0])
+                label = tk.Label(self.gameFrame, text=spot[0], padx=12, pady=5, background="gray")
                 label.grid(row=i, column=k)
     
         for row in range(rows):
@@ -65,9 +65,9 @@ class pysweeper:
                 if gameField[row][col][0] == 'B':
                     button.configure(command=lambda bn=button: self.__gameLoss(bn))
                 elif gameField[row][col][0] == 0:
-                    button.configure(command=lambda bn=button, row=row, col=col: self.__searchZeroes(bn, [row, col]))
+                    button.configure(command=lambda bn=button, row=row, col=col: self.__searchZeroes(bn, row, col))
                 else: 
-                    button.configure(command=lambda bn=button: bn.destroy())
+                    button.configure(command=lambda bn=button, row=row, col=col: self.__regButtonClick(bn, row, col))
 
                 button.grid(row=row, column=col)
 
@@ -76,6 +76,7 @@ class pysweeper:
                 button.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status))
 
                 self.controller.setButtonTile(row, col, button)
+
 
         # self.controller.printGameField()
         self.infoFrame.grid(row=0, column=0)
@@ -88,10 +89,41 @@ class pysweeper:
         button.destroy()
         print("BOMB!!")
 
-    def __searchZeroes(self, button, pos):
+    def __regButtonClick(self, button, row, col):
         button.destroy()
-        print(pos[0])
-        print(pos[1])
+        self.controller.unsetButtonTile(row, col)
+
+    def __searchZeroes(self, button, row, col):
+        button.destroy()
+        self.controller.unsetButtonTile(row, col)
+        field = self.controller.gameField
+        
+        if len(field) > row + 1 and len(field[row]) > col + 1:
+            if field[row+1][col+1][1] is not None:
+                field[row+1][col+1][1].invoke()
+        if len(field) > row + 1:
+            if field[row+1][col][1] is not None:
+                field[row+1][col][1].invoke()
+        if len(field) > row + 1 and 0 <= col - 1:
+            if field[row+1][col-1][1] is not None:
+                field[row+1][col-1][1].invoke()
+
+        if len(field[row]) > col + 1:
+            if field[row][col+1][1] is not None:
+                field[row][col+1][1].invoke()
+        if 0 <= col - 1:
+            if field[row][col-1][1] is not None:
+                field[row][col-1][1].invoke()
+
+        if 0 <= row - 1 and len(field[row]) > col + 1:
+            if field[row-1][col+1][1] is not None:
+                field[row-1][col+1][1].invoke()
+        if 0 <= row - 1:
+            if field[row-1][col][1] is not None:
+                field[row-1][col][1].invoke()
+        if 0 <= row + 1 and 0 <= col + 1:
+            if field[row-1][col-1][1] is not None:
+                field[row-1][col-1][1].invoke()
 
     def __setFlag(self, event, status):
         if status: # If flag is set
