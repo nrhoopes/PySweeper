@@ -121,7 +121,7 @@ class pysweeper:
         if 0 <= row - 1:
             if field[row-1][col][1] is not None:
                 field[row-1][col][1].invoke()
-        if 0 <= row + 1 and 0 <= col + 1:
+        if 0 <= row - 1 and 0 <= col - 1:
             if field[row-1][col-1][1] is not None:
                 field[row-1][col-1][1].invoke()
 
