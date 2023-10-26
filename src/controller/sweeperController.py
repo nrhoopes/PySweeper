@@ -33,6 +33,7 @@ class pyControl:
             self.correctFlags += 1
             if self.correctFlags == self.bombCount:
                 print("Win!")
+                self.gui.notifyWin()
     
     def notifyFlagUnset(self, row, col):
         self.flagCount += 1

@@ -1,12 +1,24 @@
 import tkinter as tk
+from tkinter import messagebox
 
 class pysweeper:
     def __init__(self) -> None:
         self.root = tk.Tk()
-        self.root.geometry("750x750")
         self.root.title("PySweeper")
         self.mainFrame = tk.Frame(self.root)
 
+        self.populateMainMenu()
+
+        self.mainFrame.pack()
+
+    def launch(self):
+        self.root.mainloop()
+
+    def clearFrame(self, frame):
+        for widgets in frame.winfo_children():
+            widgets.destroy()
+
+    def populateMainMenu(self):
         welcomeLabel = tk.Label(self.mainFrame, text="PySweeper", font=('Arial', 72))
         welcomeLabel.grid(row=0, column=0)
         descLabel = tk.Label(self.mainFrame, text="A minesweeper clone, in Python", font=('Arial', 14))
@@ -20,15 +32,6 @@ class pysweeper:
 
         playGameButton.grid(row=3, column=0, pady=25)
         quitGameButton.grid(row=4, column=0, pady=25)
-
-        self.mainFrame.pack()
-
-    def launch(self):
-        self.root.mainloop()
-
-    def clearFrame(self, frame):
-        for widgets in frame.winfo_children():
-            widgets.destroy()
 
     def assignController(self, controller):
         self.controller = controller
@@ -91,6 +94,12 @@ class pysweeper:
             self.flagCounter.configure(text="0" + str(flagCount))
         else:
             self.flagCounter.configure(text="00" + str(flagCount))
+
+    def notifyWin(self):
+        tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
+        self.clearFrame(self.mainFrame)
+        self.populateMainMenu()
+
 
     def __gameLoss(self, button):
         button.destroy()
