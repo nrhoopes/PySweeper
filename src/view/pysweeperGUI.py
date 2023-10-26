@@ -1,12 +1,24 @@
 import tkinter as tk
+from tkinter import messagebox
 
 class pysweeper:
     def __init__(self) -> None:
         self.root = tk.Tk()
-        self.root.geometry("750x750")
         self.root.title("PySweeper")
         self.mainFrame = tk.Frame(self.root)
 
+        self.populateMainMenu()
+
+        self.mainFrame.pack()
+
+    def launch(self):
+        self.root.mainloop()
+
+    def clearFrame(self, frame):
+        for widgets in frame.winfo_children():
+            widgets.destroy()
+
+    def populateMainMenu(self):
         welcomeLabel = tk.Label(self.mainFrame, text="PySweeper", font=('Arial', 72))
         welcomeLabel.grid(row=0, column=0)
         descLabel = tk.Label(self.mainFrame, text="A minesweeper clone, in Python", font=('Arial', 14))
@@ -20,15 +32,6 @@ class pysweeper:
 
         playGameButton.grid(row=3, column=0, pady=25)
         quitGameButton.grid(row=4, column=0, pady=25)
-
-        self.mainFrame.pack()
-
-    def launch(self):
-        self.root.mainloop()
-
-    def clearFrame(self, frame):
-        for widgets in frame.winfo_children():
-            widgets.destroy()
 
     def assignController(self, controller):
         self.controller = controller
@@ -54,22 +57,106 @@ class pysweeper:
         self.timer.grid(row=0, column=4, sticky="e")
 
         for i, row in enumerate(gameField):
-            # print("This is row: " + str(row))
             for k, spot in enumerate(row):
-                label = tk.Label(self.gameFrame, text=spot)
+                label = tk.Label(self.gameFrame, text=spot[0], padx=12, pady=5, background="gray")
                 label.grid(row=i, column=k)
     
         for row in range(rows):
             for col in range(cols):
                 button = tk.Button(self.gameFrame, width=1, height=1, text="", highlightbackground="gray")
-                button.configure(command=lambda bn=button: bn.destroy())
+                
+                if gameField[row][col][0] == 'B':
+                    button.configure(command=lambda bn=button: self.__gameLoss(bn))
+                elif gameField[row][col][0] == 0:
+                    button.configure(command=lambda bn=button, row=row, col=col: self.__searchZeroes(bn, row, col))
+                else: 
+                    button.configure(command=lambda bn=button, row=row, col=col: self.__regButtonClick(bn, row, col))
+
+                # Right click/Middle click events depending on OS
+                button.bind("<Button-2>", lambda event, status=False, row=row, col=col: self.__setFlag(event, status, row, col))
+                button.bind("<Button-3>", lambda event, status=False, row=row, col=col: self.__setFlag(event, status, row, col))
+
                 button.grid(row=row, column=col)
 
+                self.controller.setButtonTile(row, col, button)
+
+
+
+        # self.controller.printGameField()
         self.infoFrame.grid(row=0, column=0)
         self.gameFrame.grid(row=1, column=0)
         # 1 second to allow loading, 1 second to begin timer.
         # May be better to start timer on first button click in future...
         self.infoFrame.after(2000, self.__updateTimer)
+    
+    def updateFlagCounter(self, flagCount):
+        if flagCount > 9:
+            self.flagCounter.configure(text="0" + str(flagCount))
+        else:
+            self.flagCounter.configure(text="00" + str(flagCount))
+
+    def notifyWin(self):
+        tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
+        self.clearFrame(self.mainFrame)
+        self.populateMainMenu()
+
+
+    def __gameLoss(self, button):
+        button.destroy()
+        print("BOMB!!")
+
+    def __regButtonClick(self, button, row, col):
+        button.destroy()
+        self.controller.unsetButtonTile(row, col)
+
+    def __searchZeroes(self, button, row, col):
+        button.destroy()
+        self.controller.unsetButtonTile(row, col)
+        field = self.controller.gameField
+        
+        if len(field) > row + 1 and len(field[row]) > col + 1:
+            if field[row+1][col+1][1] is not None:
+                field[row+1][col+1][1].invoke()
+        if len(field) > row + 1:
+            if field[row+1][col][1] is not None:
+                field[row+1][col][1].invoke()
+        if len(field) > row + 1 and 0 <= col - 1:
+            if field[row+1][col-1][1] is not None:
+                field[row+1][col-1][1].invoke()
+
+        if len(field[row]) > col + 1:
+            if field[row][col+1][1] is not None:
+                field[row][col+1][1].invoke()
+        if 0 <= col - 1:
+            if field[row][col-1][1] is not None:
+                field[row][col-1][1].invoke()
+
+        if 0 <= row - 1 and len(field[row]) > col + 1:
+            if field[row-1][col+1][1] is not None:
+                field[row-1][col+1][1].invoke()
+        if 0 <= row - 1:
+            if field[row-1][col][1] is not None:
+                field[row-1][col][1].invoke()
+        if 0 <= row - 1 and 0 <= col - 1:
+            if field[row-1][col-1][1] is not None:
+                field[row-1][col-1][1].invoke()
+
+    def __setFlag(self, event, status, row, col):
+        if status: # If flag is set
+            # unset flag
+            event.widget.configure(text="")
+            event.widget.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status, row, col))
+            event.widget.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status, row, col))
+
+            self.controller.notifyFlagUnset(row, col)
+        else: # If flag is not set
+            if self.controller.flagCount > 0: # If player still has flags remaining
+                # set flag
+                event.widget.configure(text="F")
+                event.widget.bind("<Button-2>", lambda event, status=True: self.__setFlag(event, status, row, col))
+                event.widget.bind("<Button-3>", lambda event, status=True: self.__setFlag(event, status, row, col))
+
+                self.controller.notifyFlagSet(row, col)
 
     def __updateTimer(self):
         self.controller.time += 1
