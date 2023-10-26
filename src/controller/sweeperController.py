@@ -1,9 +1,17 @@
+# pyControl controller object for the pysweeperGUI and PySweeper game.
 import random
 
 class pyControl:
+    # pyControl constructor
+    # ties the gui to the controller.
     def __init__(self, GUI) -> None:
         self.gui = GUI
 
+    # Public method startGame
+    #
+    # Creates a brand new game by initializing all required variables
+    # to 0, notifying the gui to clear itself, creates the new gamefield
+    # based on predefined numbers, and sends it to the GUI to create the field.
     def startGame(self):
         self.gui.clearFrame(self.gui.mainFrame)
         self.time = 0
@@ -12,7 +20,11 @@ class pyControl:
         self.correctFlags = 0
         self.gameField = []
 
-        self.gameField = self.__createField(20, 20, 0.10)
+        # Predefined 20x20 field (400 tiles) with a 10% chance for a tile to contain a mine.
+        # NOTE: This may create performance issues with Tkinter, especially if you increase the number
+        #       of tiles, as each tile is an individual widget, and Tkinter runs into performance problems
+        #       with a large amount of widgets on screen at once.
+        self.gameField = self.__createField(20, 20, 0.10) 
         self.flagCount = self.bombCount
         self.gui.createBasicGame(self.gameField, self.flagCount)
 
