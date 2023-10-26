@@ -69,13 +69,14 @@ class pysweeper:
                 else: 
                     button.configure(command=lambda bn=button, row=row, col=col: self.__regButtonClick(bn, row, col))
 
+                # Right click/Middle click events depending on OS
+                button.bind("<Button-2>", lambda event, status=False, row=row, col=col: self.__setFlag(event, status, row, col))
+                button.bind("<Button-3>", lambda event, status=False, row=row, col=col: self.__setFlag(event, status, row, col))
+
                 button.grid(row=row, column=col)
 
-                # Right click/Middle click events depending on OS
-                button.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status, row, col))
-                button.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status, row, col))
-
                 self.controller.setButtonTile(row, col, button)
+
 
 
         # self.controller.printGameField()

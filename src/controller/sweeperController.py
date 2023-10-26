@@ -29,16 +29,15 @@ class pyControl:
     def notifyFlagSet(self, row, col):
         self.flagCount -= 1
         self.gui.updateFlagCounter(self.flagCount)
-        if self.gameField[row][col] == 'B':
+        if self.gameField[row][col][0] == 'B':
             self.correctFlags += 1
-        
             if self.correctFlags == self.bombCount:
                 print("Win!")
     
     def notifyFlagUnset(self, row, col):
         self.flagCount += 1
         self.gui.updateFlagCounter(self.flagCount)
-        if self.gameField[row][col] == 'B':
+        if self.gameField[row][col][0] == 'B':
             self.correctFlags -= 1
 
     def __createField(self, rows, cols, percentChanceOfBomb):
