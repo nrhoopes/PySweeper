@@ -174,7 +174,9 @@ class pysweeper:
     # the user will be notified of a gameloss.
     def __gameLoss(self, button):
         button.destroy()
-        print("BOMB!!")
+        tk.messagebox.showinfo(parent=self.root, title="KABOOM!", message="You've stepped on a mine! Game Over!")
+        self.clearFrame(self.mainFrame)
+        self.populateMainMenu()
 
     # Private method __regButtonClick
     # Arguments:
