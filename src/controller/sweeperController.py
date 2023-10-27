@@ -19,6 +19,7 @@ class pyControl:
         self.flagCount = 0
         self.correctFlags = 0
         self.gameField = []
+        self.timerRunning = True
 
         # Predefined 20x20 field (400 tiles) with a 10% chance for a tile to contain a mine.
         # NOTE: This may create performance issues with Tkinter, especially if you increase the number
@@ -89,6 +90,12 @@ class pyControl:
         self.gui.updateFlagCounter(self.flagCount)
         if self.gameField[row][col][0] == 'B':
             self.correctFlags -= 1
+
+    # Public method stopTimer
+    # 
+    # Stops the running timer, in the case of a game loss or win.
+    def stopTimer(self):
+        self.timerRunning = False
 
     # Private method __createField
     # Arguments:

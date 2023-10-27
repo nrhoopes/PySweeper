@@ -54,18 +54,18 @@ class pysweeper:
     # Populates the self.mainFrame with the widgets for the main menu.
     def populateMainMenu(self):
         welcomeLabel = tk.Label(self.mainFrame, text="PySweeper", font=('Arial', 72))
-        welcomeLabel.grid(row=0, column=0)
+        welcomeLabel.grid(row=0, column=0, padx=25)
         descLabel = tk.Label(self.mainFrame, text="A minesweeper clone, in Python", font=('Arial', 14))
-        descLabel.grid(row=1, column=0)
+        descLabel.grid(row=1, column=0, padx=25)
 
         playGameButton = tk.Button(self.mainFrame, text="Play Game", font=('Arial', 56), width=10, command=lambda: self.controller.startGame())
         quitGameButton = tk.Button(self.mainFrame, text="Quit Game", font=('Arial', 56), width=10, command=lambda: self.root.destroy())
 
         dummySpace = tk.Label(self.mainFrame, text="")
-        dummySpace.grid(row=2, column=0, pady=50)
+        dummySpace.grid(row=2, column=0, pady=25, padx=25)
 
-        playGameButton.grid(row=3, column=0, pady=25)
-        quitGameButton.grid(row=4, column=0, pady=25)
+        playGameButton.grid(row=3, column=0, pady=25, padx=25)
+        quitGameButton.grid(row=4, column=0, pady=25, padx=25)
 
     # Public method assignController
     # Arguments:
@@ -162,6 +162,7 @@ class pysweeper:
     # Causes a message box to appear, notifying the user they have won.  Then clears the
     # screens and loads the main menu.
     def notifyWin(self):
+        self.controller.stopTimer()
         tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
         self.clearFrame(self.mainFrame)
         self.populateMainMenu()
@@ -174,7 +175,10 @@ class pysweeper:
     # the user will be notified of a gameloss.
     def __gameLoss(self, button):
         button.destroy()
-        print("BOMB!!")
+        self.controller.stopTimer()
+        tk.messagebox.showinfo(parent=self.root, title="KABOOM!", message="You've stepped on a mine! Game Over!")
+        self.clearFrame(self.mainFrame)
+        self.populateMainMenu()
 
     # Private method __regButtonClick
     # Arguments:
@@ -260,9 +264,12 @@ class pysweeper:
     # Called by tkinter every second to increment the time
     # counter.
     def __updateTimer(self):
-        self.controller.time += 1
-        self.timer.configure(text=str(self.controller.time))
-        self.infoFrame.after(1000, self.__updateTimer)
+        if self.controller.timerRunning:
+            self.controller.time += 1
+            self.timer.configure(text=str(self.controller.time))
+            self.infoFrame.after(1000, self.__updateTimer)
+        else:
+            print("final time: " + str(self.controller.time) + " seconds")
 
 
 # pysweeper()
