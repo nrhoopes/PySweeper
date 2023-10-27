@@ -50,6 +50,18 @@ class pysweeper:
         self.fourImgRaw = Image.open('src/img/four.png')
         self.fourImg = ImageTk.PhotoImage(self.fourImgRaw)
 
+        self.fiveImgRaw = Image.open('src/img/five.png')
+        self.fiveImg = ImageTk.PhotoImage(self.fiveImgRaw)
+
+        self.sixImgRaw = Image.open('src/img/six.png')
+        self.sixImg = ImageTk.PhotoImage(self.sixImgRaw)
+
+        self.sevenImgRaw = Image.open('src/img/seven.png')
+        self.sevenImg = ImageTk.PhotoImage(self.sevenImgRaw)
+
+        self.eightImgRaw = Image.open('src/img/eight.png')
+        self.eightImg = ImageTk.PhotoImage(self.eightImgRaw)
+
         # Create and populate Main Menu, then display
         self.mainFrame = tk.Frame(self.root)
 
@@ -149,6 +161,14 @@ class pysweeper:
                         label = tk.Label(self.gameFrame, image=self.threeImg, padx=12, pady=5, background="gray")
                     case 4:
                         label = tk.Label(self.gameFrame, image=self.fourImg, padx=12, pady=5, background="gray")
+                    case 5:
+                        label = tk.Label(self.gameFrame, image=self.fiveImg, padx=12, pady=5, background="gray")
+                    case 6:
+                        label = tk.Label(self.gameFrame, image=self.sixImg, padx=12, pady=5, background="gray")
+                    case 7:
+                        label = tk.Label(self.gameFrame, image=self.sevenImg, padx=12, pady=5, background="gray")
+                    case 8:
+                        label = tk.Label(self.gameFrame, image=self.eightImg, padx=12, pady=5, background="gray")
                     case _:
                         label = tk.Label(self.gameFrame, text=spot[0], padx=12, pady=5, background="gray")
                 label.grid(row=i, column=k)
