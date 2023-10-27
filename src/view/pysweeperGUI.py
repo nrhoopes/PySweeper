@@ -162,6 +162,7 @@ class pysweeper:
     # Causes a message box to appear, notifying the user they have won.  Then clears the
     # screens and loads the main menu.
     def notifyWin(self):
+        self.controller.stopTimer()
         tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
         self.clearFrame(self.mainFrame)
         self.populateMainMenu()
@@ -174,6 +175,7 @@ class pysweeper:
     # the user will be notified of a gameloss.
     def __gameLoss(self, button):
         button.destroy()
+        self.controller.stopTimer()
         tk.messagebox.showinfo(parent=self.root, title="KABOOM!", message="You've stepped on a mine! Game Over!")
         self.clearFrame(self.mainFrame)
         self.populateMainMenu()
@@ -262,9 +264,12 @@ class pysweeper:
     # Called by tkinter every second to increment the time
     # counter.
     def __updateTimer(self):
-        self.controller.time += 1
-        self.timer.configure(text=str(self.controller.time))
-        self.infoFrame.after(1000, self.__updateTimer)
+        if self.controller.timerRunning:
+            self.controller.time += 1
+            self.timer.configure(text=str(self.controller.time))
+            self.infoFrame.after(1000, self.__updateTimer)
+        else:
+            print("final time: " + str(self.controller.time) + " seconds")
 
 
 # pysweeper()
