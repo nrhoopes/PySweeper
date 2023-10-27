@@ -20,6 +20,8 @@
 
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import PhotoImage
+from PIL import Image, ImageTk
 
 class pysweeper:
     # pysweeper constructor
@@ -27,11 +29,34 @@ class pysweeper:
     def __init__(self) -> None:
         self.root = tk.Tk()
         self.root.title("PySweeper")
+
+        # Load all images
+        self.mineImgRaw = Image.open('src/img/mine.png')
+        # self.mineImgRaw = self.mineImgRaw.resize((25, 25))
+        self.mineImg = ImageTk.PhotoImage(self.mineImgRaw)
+
+        self.zeroImgRaw = Image.open('src/img/zero.png')
+        self.zeroImg = ImageTk.PhotoImage(self.zeroImgRaw)
+
+        self.oneImgRaw = Image.open('src/img/one.png')
+        self.oneImg = ImageTk.PhotoImage(self.oneImgRaw)
+
+        self.twoImgRaw = Image.open('src/img/two.png')
+        self.twoImg = ImageTk.PhotoImage(self.twoImgRaw)
+
+        self.threeImgRaw = Image.open('src/img/three.png')
+        self.threeImg = ImageTk.PhotoImage(self.threeImgRaw)
+
+        self.fourImgRaw = Image.open('src/img/four.png')
+        self.fourImg = ImageTk.PhotoImage(self.fourImgRaw)
+
+        # Create and populate Main Menu, then display
         self.mainFrame = tk.Frame(self.root)
 
         self.populateMainMenu()
 
         self.mainFrame.pack()
+
 
     # Public method launch
     #
@@ -111,7 +136,21 @@ class pysweeper:
         # # # # # # Creation of the label field underneath the tiles. # # # # # #
         for i, row in enumerate(gameField):
             for k, spot in enumerate(row):
-                label = tk.Label(self.gameFrame, text=spot[0], padx=12, pady=5, background="gray")
+                match spot[0]:
+                    case 'B':
+                        label = tk.Label(self.gameFrame, image=self.mineImg, padx=12, pady=5, background="gray")
+                    case 0:
+                        label = tk.Label(self.gameFrame, image=self.zeroImg, padx=12, pady=5, background="gray")
+                    case 1:
+                        label = tk.Label(self.gameFrame, image=self.oneImg, padx=12, pady=5, background="gray")
+                    case 2:
+                        label = tk.Label(self.gameFrame, image=self.twoImg, padx=12, pady=5, background="gray")
+                    case 3:
+                        label = tk.Label(self.gameFrame, image=self.threeImg, padx=12, pady=5, background="gray")
+                    case 4:
+                        label = tk.Label(self.gameFrame, image=self.fourImg, padx=12, pady=5, background="gray")
+                    case _:
+                        label = tk.Label(self.gameFrame, text=spot[0], padx=12, pady=5, background="gray")
                 label.grid(row=i, column=k)
     
         # # # # # # Creation of the tile field itself. # # # # # # 
