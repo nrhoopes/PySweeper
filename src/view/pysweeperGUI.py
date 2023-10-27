@@ -1,7 +1,29 @@
+# PySweeper GUI
+# Implemented using Python's tkinter
+#
+# TO USE:
+#   In a main driver script, create a pysweeper object.  This object is what
+#   will be passed to the pyControl object, defined in the sweeperController.py file.
+#   NOTE:
+#       A pyControl controller object is required to be tied to the GUI using
+#       the assignController() method, otherwise the game will not be able to function
+#       correctly.  Assure to do this in the main.py driver script.
+#
+#   When everything is correctly assigned and linked, use the GUI's .launch() method
+#   to launch the application.
+#
+#   EX:
+#       gui = pysweeper()
+#       controller = pyControl(gui)
+#       gui.assignController(controller)
+#       gui.launch()
+
 import tkinter as tk
 from tkinter import messagebox
 
 class pysweeper:
+    # pysweeper constructor
+    # Creates tk Object and populates it with mainMenu widgets.
     def __init__(self) -> None:
         self.root = tk.Tk()
         self.root.title("PySweeper")
@@ -11,13 +33,25 @@ class pysweeper:
 
         self.mainFrame.pack()
 
+    # Public method launch
+    #
+    # Used in the main.py driver script to launch the mainloop of the
+    # tkinter program.
     def launch(self):
         self.root.mainloop()
 
+    # Public method clearFrame
+    # Arguments:
+    #   - frame: The tkinter.Frame frame to be cleared
+    #
+    # Clears all widgets from the passed frame.
     def clearFrame(self, frame):
         for widgets in frame.winfo_children():
             widgets.destroy()
 
+    # Public method populateMainMenu
+    # 
+    # Populates the self.mainFrame with the widgets for the main menu.
     def populateMainMenu(self):
         welcomeLabel = tk.Label(self.mainFrame, text="PySweeper", font=('Arial', 72))
         welcomeLabel.grid(row=0, column=0)
@@ -33,12 +67,30 @@ class pysweeper:
         playGameButton.grid(row=3, column=0, pady=25)
         quitGameButton.grid(row=4, column=0, pady=25)
 
+    # Public method assignController
+    # Arguments:
+    #   - controller: A pyControl object
+    #
+    # Used to link a pyControl controller object to the GUI object
+    # used to launch the game.
     def assignController(self, controller):
         self.controller = controller
 
+    # Public method createBasicGame
+    # Arguments:
+    #   - gameField: A 2D list that represents the game field, passed in
+    #                by the controller.
+    #   - bombCount: The total number of mines on the field.
+    #
+    # Creates a minefield of tiles and labels underneath the tiles. Assigns
+    # each tile a function corresponding to the label underneath it, and tied
+    # that row and column of the gameField list.
     def createBasicGame(self, gameField, bombCount):
+        # Default game field size is 20x20, 400 tiles.
         cols = 20
         rows = 20
+
+        # # # # # # Creation of the timer and flag count labels, and the reset button. # # # # # # 
         self.infoFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
         self.gameFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
         self.gameFrame.grid_columnconfigure(0, weight=1)
@@ -56,20 +108,26 @@ class pysweeper:
         self.timer = tk.Label(self.infoFrame, text=str("0"), background="black", foreground="red", font=("", 25), width=3, anchor="e")
         self.timer.grid(row=0, column=4, sticky="e")
 
+        # # # # # # Creation of the label field underneath the tiles. # # # # # #
         for i, row in enumerate(gameField):
             for k, spot in enumerate(row):
                 label = tk.Label(self.gameFrame, text=spot[0], padx=12, pady=5, background="gray")
                 label.grid(row=i, column=k)
     
+        # # # # # # Creation of the tile field itself. # # # # # # 
         for row in range(rows):
             for col in range(cols):
                 button = tk.Button(self.gameFrame, width=1, height=1, text="", highlightbackground="gray")
                 
+                # Setting of the three different functions depending on the label underneath the tile.
                 if gameField[row][col][0] == 'B':
+                    # If the tile is a mine, call for a game loss condition.
                     button.configure(command=lambda bn=button: self.__gameLoss(bn))
                 elif gameField[row][col][0] == 0:
+                    # If the tile is a 0, recursively search through the adjacent 0's
                     button.configure(command=lambda bn=button, row=row, col=col: self.__searchZeroes(bn, row, col))
                 else: 
+                    # If the tile is anything else (a number) simply destroy itself on click.
                     button.configure(command=lambda bn=button, row=row, col=col: self.__regButtonClick(bn, row, col))
 
                 # Right click/Middle click events depending on OS
@@ -78,37 +136,68 @@ class pysweeper:
 
                 button.grid(row=row, column=col)
 
+                # Send the actual button address to the controller to store in another list with the corresponding position.
                 self.controller.setButtonTile(row, col, button)
 
 
-
-        # self.controller.printGameField()
         self.infoFrame.grid(row=0, column=0)
         self.gameFrame.grid(row=1, column=0)
         # 1 second to allow loading, 1 second to begin timer.
         # May be better to start timer on first button click in future...
         self.infoFrame.after(2000, self.__updateTimer)
     
+    # Public method updateFlagCounter
+    # Arguments:
+    #   - flagCount: The number of flags to update the counter with.
+    #
+    # Accepts a flag count and updates the flagCounter label to that value on screen.
     def updateFlagCounter(self, flagCount):
         if flagCount > 9:
             self.flagCounter.configure(text="0" + str(flagCount))
         else:
             self.flagCounter.configure(text="00" + str(flagCount))
 
+    # Public method notifyWin
+    #
+    # Causes a message box to appear, notifying the user they have won.  Then clears the
+    # screens and loads the main menu.
     def notifyWin(self):
         tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
         self.clearFrame(self.mainFrame)
         self.populateMainMenu()
 
-
+    # Private method __gameLoss
+    # Arguments:
+    #   - button: The tile to destroy when uncovering a mine.
+    #
+    # When the conditions for a game loss is met (a user clicks a tile that covers a mine),
+    # the user will be notified of a gameloss.
     def __gameLoss(self, button):
         button.destroy()
         print("BOMB!!")
 
+    # Private method __regButtonClick
+    # Arguments:
+    #   - button: the tile clicked
+    #   - row: the row of the tile
+    #   - col: the col of the tile
+    #
+    # Destroys the button passed when it is clicked, and notifies the controller of it being pressed.
     def __regButtonClick(self, button, row, col):
         button.destroy()
         self.controller.unsetButtonTile(row, col)
 
+    # Private method __searchZeroes
+    # Arguments:
+    #   - button: the tile clicked
+    #   - row: the row of the tile
+    #   - col: the col of the tile
+    #
+    # Destroys the button passed when it is clicked.
+    # Because it is a zero, the game knows there are no mines adjacent to it,
+    # so it automatically invokes a button press on each of the surrounding buttons adjacent
+    # to it.  If any of those buttons also happen to be covering a 0, the game will
+    # then recursively call this function to continuously clear out 0 tiles.
     def __searchZeroes(self, button, row, col):
         button.destroy()
         self.controller.unsetButtonTile(row, col)
@@ -140,7 +229,15 @@ class pysweeper:
         if 0 <= row - 1 and 0 <= col - 1:
             if field[row-1][col-1][1] is not None:
                 field[row-1][col-1][1].invoke()
-
+    # Private method __setFlag
+    # Arguments:
+    #   - event: The button event that occurred (right click)
+    #   - status: Whether or not the flag should be set or unset
+    #   - row: the row of the tile
+    #   - col: the column of the tile
+    #
+    # Will either set or unset a flag on a tile when the user right/middle clicks it.
+    # Will not allow a flag to be set if there are no flags remaining.
     def __setFlag(self, event, status, row, col):
         if status: # If flag is set
             # unset flag
@@ -158,6 +255,10 @@ class pysweeper:
 
                 self.controller.notifyFlagSet(row, col)
 
+    # Private method __updateTimer
+    #
+    # Called by tkinter every second to increment the time
+    # counter.
     def __updateTimer(self):
         self.controller.time += 1
         self.timer.configure(text=str(self.controller.time))
