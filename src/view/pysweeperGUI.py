@@ -54,18 +54,18 @@ class pysweeper:
     # Populates the self.mainFrame with the widgets for the main menu.
     def populateMainMenu(self):
         welcomeLabel = tk.Label(self.mainFrame, text="PySweeper", font=('Arial', 72))
-        welcomeLabel.grid(row=0, column=0)
+        welcomeLabel.grid(row=0, column=0, padx=25)
         descLabel = tk.Label(self.mainFrame, text="A minesweeper clone, in Python", font=('Arial', 14))
-        descLabel.grid(row=1, column=0)
+        descLabel.grid(row=1, column=0, padx=25)
 
         playGameButton = tk.Button(self.mainFrame, text="Play Game", font=('Arial', 56), width=10, command=lambda: self.controller.startGame())
         quitGameButton = tk.Button(self.mainFrame, text="Quit Game", font=('Arial', 56), width=10, command=lambda: self.root.destroy())
 
         dummySpace = tk.Label(self.mainFrame, text="")
-        dummySpace.grid(row=2, column=0, pady=50)
+        dummySpace.grid(row=2, column=0, pady=25, padx=25)
 
-        playGameButton.grid(row=3, column=0, pady=25)
-        quitGameButton.grid(row=4, column=0, pady=25)
+        playGameButton.grid(row=3, column=0, pady=25, padx=25)
+        quitGameButton.grid(row=4, column=0, pady=25, padx=25)
 
     # Public method assignController
     # Arguments:
