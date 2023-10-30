@@ -62,6 +62,12 @@ class pysweeper:
         self.eightImgRaw = Image.open('src/img/eight.png')
         self.eightImg = ImageTk.PhotoImage(self.eightImgRaw)
 
+        self.flagImgRaw = Image.open('src/img/flag1.png')
+        self.flagImg = ImageTk.PhotoImage(self.flagImgRaw)
+
+        self.emptyTileRaw = Image.open('src/img/emptyTile.png')
+        self.emptyTile = ImageTk.PhotoImage(self.emptyTileRaw)
+
         # Create and populate Main Menu, then display
         self.mainFrame = tk.Frame(self.root)
 
@@ -176,7 +182,7 @@ class pysweeper:
         # # # # # # Creation of the tile field itself. # # # # # # 
         for row in range(rows):
             for col in range(cols):
-                button = tk.Button(self.gameFrame, width=1, height=1, text="", highlightbackground="gray")
+                button = tk.Button(self.gameFrame, width=39, height=39, image=self.emptyTile, highlightbackground="gray")
                 
                 # Setting of the three different functions depending on the label underneath the tile.
                 if gameField[row][col][0] == 'B':
@@ -304,7 +310,7 @@ class pysweeper:
     def __setFlag(self, event, status, row, col):
         if status: # If flag is set
             # unset flag
-            event.widget.configure(text="")
+            event.widget.configure(image=self.emptyTile, height=39, width=39)
             event.widget.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status, row, col))
             event.widget.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status, row, col))
 
@@ -312,7 +318,7 @@ class pysweeper:
         else: # If flag is not set
             if self.controller.flagCount > 0: # If player still has flags remaining
                 # set flag
-                event.widget.configure(text="F")
+                event.widget.configure(image=self.flagImg, height=39, width=39) # , height=39, width=39   <--- Add this back in as arguments for 4K.  Doesn't work with other rez
                 event.widget.bind("<Button-2>", lambda event, status=True: self.__setFlag(event, status, row, col))
                 event.widget.bind("<Button-3>", lambda event, status=True: self.__setFlag(event, status, row, col))
 
