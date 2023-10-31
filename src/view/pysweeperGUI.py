@@ -29,6 +29,7 @@ class pysweeper:
     def __init__(self) -> None:
         self.root = tk.Tk()
         self.root.title("PySweeper")
+        self.root.resizable(False, False)
 
         # Load all images
         self.mineImgRaw = Image.open('src/img/mine.png')
@@ -96,6 +97,7 @@ class pysweeper:
     # 
     # Populates the self.mainFrame with the widgets for the main menu.
     def populateMainMenu(self):
+        self.mainFrame.grid_propagate(True)
         welcomeLabel = tk.Label(self.mainFrame, text="PySweeper", font=('Arial', 72))
         welcomeLabel.grid(row=0, column=0, padx=25)
         descLabel = tk.Label(self.mainFrame, text="A minesweeper clone, in Python", font=('Arial', 14))
@@ -156,28 +158,28 @@ class pysweeper:
             for k, spot in enumerate(row):
                 match spot[0]:
                     case 'B':
-                        label = tk.Label(self.gameFrame, image=self.mineImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.mineImg, background="gray")
                     case 0:
-                        label = tk.Label(self.gameFrame, image=self.zeroImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.zeroImg, background="gray")
                     case 1:
-                        label = tk.Label(self.gameFrame, image=self.oneImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.oneImg, background="gray")
                     case 2:
-                        label = tk.Label(self.gameFrame, image=self.twoImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.twoImg, background="gray")
                     case 3:
-                        label = tk.Label(self.gameFrame, image=self.threeImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.threeImg, background="gray")
                     case 4:
-                        label = tk.Label(self.gameFrame, image=self.fourImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.fourImg, background="gray")
                     case 5:
-                        label = tk.Label(self.gameFrame, image=self.fiveImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.fiveImg, background="gray")
                     case 6:
-                        label = tk.Label(self.gameFrame, image=self.sixImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.sixImg, background="gray")
                     case 7:
-                        label = tk.Label(self.gameFrame, image=self.sevenImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.sevenImg, background="gray")
                     case 8:
-                        label = tk.Label(self.gameFrame, image=self.eightImg, padx=12, pady=5, background="gray")
+                        label = tk.Label(self.gameFrame, image=self.eightImg, background="gray")
                     case _:
-                        label = tk.Label(self.gameFrame, text=spot[0], padx=12, pady=5, background="gray")
-                label.grid(row=i, column=k)
+                        label = tk.Label(self.gameFrame, text=spot[0], background="gray")
+                label.grid(row=i, column=k, padx=8, pady=8)
     
         # # # # # # Creation of the tile field itself. # # # # # # 
         for row in range(rows):
