@@ -74,7 +74,6 @@ class pyControl:
         if self.gameField[row][col][0] == 'B':
             self.correctFlags += 1
             if self.correctFlags == self.bombCount:
-                print("Win!")
                 self.gui.notifyWin()
     
     # Public method notifyFlagUnset
@@ -96,6 +95,18 @@ class pyControl:
     # Stops the running timer, in the case of a game loss or win.
     def stopTimer(self):
         self.timerRunning = False
+
+    # Public method getRunningStatus
+    #
+    # Returns the status of the timer
+    def getRunningStatus(self):
+        return self.timerRunning
+
+    # Public method getGameField
+    #
+    # Returns the gamefield for usage in places other than the controller.
+    def getGameField(self):
+        return self.gameField
 
     # Private method __createField
     # Arguments:

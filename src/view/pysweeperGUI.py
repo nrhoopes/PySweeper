@@ -242,10 +242,13 @@ class pysweeper:
     # the user will be notified of a gameloss.
     def __gameLoss(self, button):
         button.destroy()
-        self.controller.stopTimer()
-        tk.messagebox.showinfo(parent=self.root, title="KABOOM!", message="You've stepped on a mine! Game Over!")
-        self.clearFrame(self.mainFrame)
-        self.populateMainMenu()
+        # If this is the first mine that the player has clicked on.
+        if self.controller.getRunningStatus():
+            self.controller.stopTimer()
+            self.__searchMines()
+            tk.messagebox.showinfo(parent=self.root, title="KABOOM!", message="You've stepped on a mine! Game Over!")
+            self.clearFrame(self.mainFrame)
+            self.populateMainMenu()
 
     # Private method __regButtonClick
     # Arguments:
@@ -257,6 +260,20 @@ class pysweeper:
     def __regButtonClick(self, button, row, col):
         button.destroy()
         self.controller.unsetButtonTile(row, col)
+
+    # Private method __searchMines
+    #
+    # Used on a gameloss situation.  If a player steps on a mine, the game will want to 
+    # show the user where the remaining mines are, so it will invoke the button above every
+    # mine to display that to the user.
+    def __searchMines(self):
+        field = self.controller.getGameField()
+        for row in field:
+            for col in row:
+                if col[0] == 'B' and col[1].winfo_exists():
+                    if col[1].cget("state") == 'disabled':
+                        col[1].configure(state="normal")
+                    col[1].invoke()
 
     # Private method __searchZeroes
     # Arguments:
@@ -272,7 +289,7 @@ class pysweeper:
     def __searchZeroes(self, button, row, col):
         button.destroy()
         self.controller.unsetButtonTile(row, col)
-        field = self.controller.gameField
+        field = self.controller.getGameField()
         
         if len(field) > row + 1 and len(field[row]) > col + 1:
             if field[row+1][col+1][1] is not None:
@@ -312,7 +329,7 @@ class pysweeper:
     def __setFlag(self, event, status, row, col):
         if status: # If flag is set
             # unset flag
-            event.widget.configure(image=self.emptyTile, height=39, width=39)
+            event.widget.configure(image=self.emptyTile, state="normal")
             event.widget.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status, row, col))
             event.widget.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status, row, col))
 
@@ -320,9 +337,11 @@ class pysweeper:
         else: # If flag is not set
             if self.controller.flagCount > 0: # If player still has flags remaining
                 # set flag
-                event.widget.configure(image=self.flagImg, height=39, width=39) # , height=39, width=39   <--- Add this back in as arguments for 4K.  Doesn't work with other rez
                 event.widget.bind("<Button-2>", lambda event, status=True: self.__setFlag(event, status, row, col))
                 event.widget.bind("<Button-3>", lambda event, status=True: self.__setFlag(event, status, row, col))
+
+                # Prevents player from accidentally clicking an already flagged tile.
+                event.widget.configure(image=self.flagImg, state="disabled")
 
                 self.controller.notifyFlagSet(row, col)
 
