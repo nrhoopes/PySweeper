@@ -137,21 +137,38 @@ class pysweeper:
 
         # # # # # # Creation of the timer and flag count labels, and the reset button. # # # # # # 
         self.infoFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
+        self.flagCounterFrame = tk.Frame(self.infoFrame, highlightbackground="gray")
         self.gameFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
         self.gameFrame.grid_columnconfigure(0, weight=1)
         
-        flagLabel = tk.Label(self.infoFrame, text="B/F:", font=("", 25), highlightbackground="gray")
-        flagLabel.grid(row=0, column=0, sticky="w")
-        self.flagCounter = tk.Label(self.infoFrame, text="0" + str(bombCount), background="black", foreground="red", font=("", 25))
-        self.flagCounter.grid(row=0, column=1, sticky="w")
+        # Different sized images for the top label
+        self.mineImgLargeRaw = self.mineImgRaw.resize((36, 36))
+        self.mineImgLarge = ImageTk.PhotoImage(self.mineImgLargeRaw)
+
+        self.flagImgLargeRaw = self.flagImgRaw.resize((36, 36))
+        self.flagImgLarge = ImageTk.PhotoImage(self.flagImgLargeRaw)
+
+        mineLabel = tk.Label(self.flagCounterFrame, image=self.mineImgLarge)
+        slashLabel = tk.Label(self.flagCounterFrame, text="/", font=("", 19), highlightbackground="gray")
+        flagLabel = tk.Label(self.flagCounterFrame, image=self.flagImgLarge)
+        colonLabel = tk.Label(self.flagCounterFrame, text=":", font=("", 19), highlightbackground="gray")
+
+        mineLabel.grid(row=0, column=0, sticky="w")
+        slashLabel.grid(row=0, column=1, sticky="w")
+        flagLabel.grid(row=0, column=2, sticky="w")
+        colonLabel.grid(row=0, column=3, sticky="w")
+        self.flagCounter = tk.Label(self.flagCounterFrame, text="0" + str(bombCount), background="black", foreground="red", font=("", 25))
+        self.flagCounter.grid(row=0, column=4, sticky="w")
+
+        self.flagCounterFrame.grid(row=0, column=0, sticky="w")
 
         restartButton = tk.Button(self.infoFrame, text="R", font=("", 25), command=self.controller.startGame)
-        restartButton.grid(row=0, column=2, padx=50)
+        restartButton.grid(row=0, column=1, padx=50)
 
         timerLabel = tk.Label(self.infoFrame, text="Time:", font=("", 25), highlightbackground="gray")
-        timerLabel.grid(row=0, column=3, sticky="e")
+        timerLabel.grid(row=0, column=2, sticky="e")
         self.timer = tk.Label(self.infoFrame, text=str("0"), background="black", foreground="red", font=("", 25), width=3, anchor="e")
-        self.timer.grid(row=0, column=4, sticky="e")
+        self.timer.grid(row=0, column=3, sticky="e")
 
         # # # # # # Creation of the label field underneath the tiles. # # # # # #
         for i, row in enumerate(gameField):
