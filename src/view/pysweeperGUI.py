@@ -69,6 +69,9 @@ class pysweeper:
         self.emptyTileRaw = Image.open('src/img/emptyTile.png')
         self.emptyTile = ImageTk.PhotoImage(self.emptyTileRaw)
 
+        self.titleImgRaw = Image.open('src/img/title.png')
+        self.titleImg = ImageTk.PhotoImage(self.titleImgRaw)
+
         # Create and populate Main Menu, then display
         self.mainFrame = tk.Frame(self.root)
 
@@ -98,7 +101,7 @@ class pysweeper:
     # Populates the self.mainFrame with the widgets for the main menu.
     def populateMainMenu(self):
         self.mainFrame.grid_propagate(True)
-        welcomeLabel = tk.Label(self.mainFrame, text="PySweeper", font=('Arial', 72))
+        welcomeLabel = tk.Label(self.mainFrame, image=self.titleImg, text="PySweeper", font=('Arial', 72))
         welcomeLabel.grid(row=0, column=0, padx=25)
         descLabel = tk.Label(self.mainFrame, text="A minesweeper clone, in Python", font=('Arial', 14))
         descLabel.grid(row=1, column=0, padx=25)
@@ -162,7 +165,11 @@ class pysweeper:
 
         self.flagCounterFrame.grid(row=0, column=0, sticky="w")
 
-        restartButton = tk.Button(self.infoFrame, text="R", font=("", 25), command=self.controller.startGame)
+        self.restartImgRaw = Image.open('src/img/restart.png')
+        self.restartImgRaw = self.restartImgRaw.resize((64, 64))
+        self.restartImg = ImageTk.PhotoImage(self.restartImgRaw)
+
+        restartButton = tk.Button(self.infoFrame, image=self.restartImg, font=("", 25), command=self.controller.startGame)
         restartButton.grid(row=0, column=1, padx=50)
 
         timerLabel = tk.Label(self.infoFrame, text="Time:", font=("", 25), highlightbackground="gray")
