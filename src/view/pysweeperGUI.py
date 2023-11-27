@@ -20,6 +20,8 @@
 
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import PhotoImage
+from PIL import Image, ImageTk
 
 class pysweeper:
     # pysweeper constructor
@@ -27,11 +29,56 @@ class pysweeper:
     def __init__(self) -> None:
         self.root = tk.Tk()
         self.root.title("PySweeper")
+        self.root.resizable(False, False)
+
+        # Load all images
+        self.mineImgRaw = Image.open('src/img/mine.png')
+        # self.mineImgRaw = self.mineImgRaw.resize((25, 25))
+        self.mineImg = ImageTk.PhotoImage(self.mineImgRaw)
+
+        self.zeroImgRaw = Image.open('src/img/zero.png')
+        self.zeroImg = ImageTk.PhotoImage(self.zeroImgRaw)
+
+        self.oneImgRaw = Image.open('src/img/one.png')
+        self.oneImg = ImageTk.PhotoImage(self.oneImgRaw)
+
+        self.twoImgRaw = Image.open('src/img/two.png')
+        self.twoImg = ImageTk.PhotoImage(self.twoImgRaw)
+
+        self.threeImgRaw = Image.open('src/img/three.png')
+        self.threeImg = ImageTk.PhotoImage(self.threeImgRaw)
+
+        self.fourImgRaw = Image.open('src/img/four.png')
+        self.fourImg = ImageTk.PhotoImage(self.fourImgRaw)
+
+        self.fiveImgRaw = Image.open('src/img/five.png')
+        self.fiveImg = ImageTk.PhotoImage(self.fiveImgRaw)
+
+        self.sixImgRaw = Image.open('src/img/six.png')
+        self.sixImg = ImageTk.PhotoImage(self.sixImgRaw)
+
+        self.sevenImgRaw = Image.open('src/img/seven.png')
+        self.sevenImg = ImageTk.PhotoImage(self.sevenImgRaw)
+
+        self.eightImgRaw = Image.open('src/img/eight.png')
+        self.eightImg = ImageTk.PhotoImage(self.eightImgRaw)
+
+        self.flagImgRaw = Image.open('src/img/flag1.png')
+        self.flagImg = ImageTk.PhotoImage(self.flagImgRaw)
+
+        self.emptyTileRaw = Image.open('src/img/emptyTile.png')
+        self.emptyTile = ImageTk.PhotoImage(self.emptyTileRaw)
+
+        self.titleImgRaw = Image.open('src/img/title.png')
+        self.titleImg = ImageTk.PhotoImage(self.titleImgRaw)
+
+        # Create and populate Main Menu, then display
         self.mainFrame = tk.Frame(self.root)
 
         self.populateMainMenu()
 
         self.mainFrame.pack()
+
 
     # Public method launch
     #
@@ -53,7 +100,8 @@ class pysweeper:
     # 
     # Populates the self.mainFrame with the widgets for the main menu.
     def populateMainMenu(self):
-        welcomeLabel = tk.Label(self.mainFrame, text="PySweeper", font=('Arial', 72))
+        self.mainFrame.grid_propagate(True)
+        welcomeLabel = tk.Label(self.mainFrame, image=self.titleImg, text="PySweeper", font=('Arial', 72))
         welcomeLabel.grid(row=0, column=0, padx=25)
         descLabel = tk.Label(self.mainFrame, text="A minesweeper clone, in Python", font=('Arial', 14))
         descLabel.grid(row=1, column=0, padx=25)
@@ -92,32 +140,75 @@ class pysweeper:
 
         # # # # # # Creation of the timer and flag count labels, and the reset button. # # # # # # 
         self.infoFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
+        self.flagCounterFrame = tk.Frame(self.infoFrame, highlightbackground="gray")
         self.gameFrame = tk.Frame(self.mainFrame, highlightthickness=4, highlightbackground="gray", background="gray")
         self.gameFrame.grid_columnconfigure(0, weight=1)
         
-        flagLabel = tk.Label(self.infoFrame, text="B/F:", font=("", 25), highlightbackground="gray")
-        flagLabel.grid(row=0, column=0, sticky="w")
-        self.flagCounter = tk.Label(self.infoFrame, text="0" + str(bombCount), background="black", foreground="red", font=("", 25))
-        self.flagCounter.grid(row=0, column=1, sticky="w")
+        # Different sized images for the top label
+        self.mineImgLargeRaw = self.mineImgRaw.resize((36, 36))
+        self.mineImgLarge = ImageTk.PhotoImage(self.mineImgLargeRaw)
 
-        restartButton = tk.Button(self.infoFrame, text="R", font=("", 25), command=self.controller.startGame)
-        restartButton.grid(row=0, column=2, padx=50)
+        self.flagImgLargeRaw = self.flagImgRaw.resize((36, 36))
+        self.flagImgLarge = ImageTk.PhotoImage(self.flagImgLargeRaw)
+
+        mineLabel = tk.Label(self.flagCounterFrame, image=self.mineImgLarge)
+        slashLabel = tk.Label(self.flagCounterFrame, text="/", font=("", 19), highlightbackground="gray")
+        flagLabel = tk.Label(self.flagCounterFrame, image=self.flagImgLarge)
+        colonLabel = tk.Label(self.flagCounterFrame, text=":", font=("", 19), highlightbackground="gray")
+
+        mineLabel.grid(row=0, column=0, sticky="w")
+        slashLabel.grid(row=0, column=1, sticky="w")
+        flagLabel.grid(row=0, column=2, sticky="w")
+        colonLabel.grid(row=0, column=3, sticky="w")
+        self.flagCounter = tk.Label(self.flagCounterFrame, text="0" + str(bombCount), background="black", foreground="red", font=("", 25))
+        self.flagCounter.grid(row=0, column=4, sticky="w")
+
+        self.flagCounterFrame.grid(row=0, column=0, sticky="w")
+
+        self.restartImgRaw = Image.open('src/img/restart.png')
+        self.restartImgRaw = self.restartImgRaw.resize((64, 64))
+        self.restartImg = ImageTk.PhotoImage(self.restartImgRaw)
+
+        restartButton = tk.Button(self.infoFrame, image=self.restartImg, font=("", 25), command=self.controller.startGame)
+        restartButton.grid(row=0, column=1, padx=50)
 
         timerLabel = tk.Label(self.infoFrame, text="Time:", font=("", 25), highlightbackground="gray")
-        timerLabel.grid(row=0, column=3, sticky="e")
+        timerLabel.grid(row=0, column=2, sticky="e")
         self.timer = tk.Label(self.infoFrame, text=str("0"), background="black", foreground="red", font=("", 25), width=3, anchor="e")
-        self.timer.grid(row=0, column=4, sticky="e")
+        self.timer.grid(row=0, column=3, sticky="e")
 
         # # # # # # Creation of the label field underneath the tiles. # # # # # #
         for i, row in enumerate(gameField):
             for k, spot in enumerate(row):
-                label = tk.Label(self.gameFrame, text=spot[0], padx=12, pady=5, background="gray")
-                label.grid(row=i, column=k)
+                match spot[0]:
+                    case 'B':
+                        label = tk.Label(self.gameFrame, image=self.mineImg, background="gray")
+                    case 0:
+                        label = tk.Label(self.gameFrame, image=self.zeroImg, background="gray")
+                    case 1:
+                        label = tk.Label(self.gameFrame, image=self.oneImg, background="gray")
+                    case 2:
+                        label = tk.Label(self.gameFrame, image=self.twoImg, background="gray")
+                    case 3:
+                        label = tk.Label(self.gameFrame, image=self.threeImg, background="gray")
+                    case 4:
+                        label = tk.Label(self.gameFrame, image=self.fourImg, background="gray")
+                    case 5:
+                        label = tk.Label(self.gameFrame, image=self.fiveImg, background="gray")
+                    case 6:
+                        label = tk.Label(self.gameFrame, image=self.sixImg, background="gray")
+                    case 7:
+                        label = tk.Label(self.gameFrame, image=self.sevenImg, background="gray")
+                    case 8:
+                        label = tk.Label(self.gameFrame, image=self.eightImg, background="gray")
+                    case _:
+                        label = tk.Label(self.gameFrame, text=spot[0], background="gray")
+                label.grid(row=i, column=k, padx=8, pady=8)
     
         # # # # # # Creation of the tile field itself. # # # # # # 
         for row in range(rows):
             for col in range(cols):
-                button = tk.Button(self.gameFrame, width=1, height=1, text="", highlightbackground="gray")
+                button = tk.Button(self.gameFrame, width=39, height=39, image=self.emptyTile, highlightbackground="gray")
                 
                 # Setting of the three different functions depending on the label underneath the tile.
                 if gameField[row][col][0] == 'B':
@@ -175,10 +266,13 @@ class pysweeper:
     # the user will be notified of a gameloss.
     def __gameLoss(self, button):
         button.destroy()
-        self.controller.stopTimer()
-        tk.messagebox.showinfo(parent=self.root, title="KABOOM!", message="You've stepped on a mine! Game Over!")
-        self.clearFrame(self.mainFrame)
-        self.populateMainMenu()
+        # If this is the first mine that the player has clicked on.
+        if self.controller.getRunningStatus():
+            self.controller.stopTimer()
+            self.__searchMines()
+            tk.messagebox.showinfo(parent=self.root, title="KABOOM!", message="You've stepped on a mine! Game Over!")
+            self.clearFrame(self.mainFrame)
+            self.populateMainMenu()
 
     # Private method __regButtonClick
     # Arguments:
@@ -190,6 +284,20 @@ class pysweeper:
     def __regButtonClick(self, button, row, col):
         button.destroy()
         self.controller.unsetButtonTile(row, col)
+
+    # Private method __searchMines
+    #
+    # Used on a gameloss situation.  If a player steps on a mine, the game will want to 
+    # show the user where the remaining mines are, so it will invoke the button above every
+    # mine to display that to the user.
+    def __searchMines(self):
+        field = self.controller.getGameField()
+        for row in field:
+            for col in row:
+                if col[0] == 'B' and col[1].winfo_exists():
+                    if col[1].cget("state") == 'disabled':
+                        col[1].configure(state="normal")
+                    col[1].invoke()
 
     # Private method __searchZeroes
     # Arguments:
@@ -205,7 +313,7 @@ class pysweeper:
     def __searchZeroes(self, button, row, col):
         button.destroy()
         self.controller.unsetButtonTile(row, col)
-        field = self.controller.gameField
+        field = self.controller.getGameField()
         
         if len(field) > row + 1 and len(field[row]) > col + 1:
             if field[row+1][col+1][1] is not None:
@@ -245,7 +353,7 @@ class pysweeper:
     def __setFlag(self, event, status, row, col):
         if status: # If flag is set
             # unset flag
-            event.widget.configure(text="")
+            event.widget.configure(image=self.emptyTile, state="normal")
             event.widget.bind("<Button-2>", lambda event, status=False: self.__setFlag(event, status, row, col))
             event.widget.bind("<Button-3>", lambda event, status=False: self.__setFlag(event, status, row, col))
 
@@ -253,9 +361,11 @@ class pysweeper:
         else: # If flag is not set
             if self.controller.flagCount > 0: # If player still has flags remaining
                 # set flag
-                event.widget.configure(text="F")
                 event.widget.bind("<Button-2>", lambda event, status=True: self.__setFlag(event, status, row, col))
                 event.widget.bind("<Button-3>", lambda event, status=True: self.__setFlag(event, status, row, col))
+
+                # Prevents player from accidentally clicking an already flagged tile.
+                event.widget.configure(image=self.flagImg, state="disabled")
 
                 self.controller.notifyFlagSet(row, col)
 
