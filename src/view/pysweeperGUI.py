@@ -284,7 +284,7 @@ class pysweeper:
             username.set(username.get()[:3].upper())
 
     def __sendUsername(self, username, time):
-        
+        self.controller.createHighscoreEntry(username, time)
         self.highScoreEntryWin.destroy()
 
 

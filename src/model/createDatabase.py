@@ -20,15 +20,17 @@ class pyData:
                     scoreNum INTEGER PRIMARY KEY NOT NULL,
                     username TEXT NOT NULL,
                     score INTEGER NOT NULL
-                )
+                );
                 ''')
             conn.commit()
 
             return conn
 
     def insertScore(self, username, score):
-        status = self.conn.execute(''' INSERT INTO normalScores (username, score) VALUES (?, ?);
-        ''', username, score)
+        maxScoreID = self.conn.execute(''' SELECT MAX(scoreNum) FROM normalScores;''')
+        
+        status = self.conn.execute(''' INSERT INTO normalScores (scoreNum, username, score) VALUES (?, ?, ?);
+        ''', (list(maxScoreID)[0][0], username, score))
 
         self.conn.commit()
 

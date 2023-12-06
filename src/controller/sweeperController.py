@@ -6,6 +6,7 @@ class pyControl:
     # ties the gui to the controller.
     def __init__(self, GUI, model) -> None:
         self.gui = GUI
+        self.model = model
 
     # Public method startGame
     #
@@ -111,7 +112,7 @@ class pyControl:
         return self.gameField
 
     def createHighscoreEntry(self, username, score):
-        pass
+        self.model.insertScore(username, score)
 
     # Private method __createField
     # Arguments:
