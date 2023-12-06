@@ -4,7 +4,7 @@ import random
 class pyControl:
     # pyControl constructor
     # ties the gui to the controller.
-    def __init__(self, GUI) -> None:
+    def __init__(self, GUI, model) -> None:
         self.gui = GUI
 
     # Public method startGame
@@ -73,8 +73,10 @@ class pyControl:
         self.gui.updateFlagCounter(self.flagCount)
         if self.gameField[row][col][0] == 'B':
             self.correctFlags += 1
-            if self.correctFlags == self.bombCount:
+            #if self.correctFlags == self.bombCount:
+            if self.correctFlags == 1:
                 self.gui.notifyWin()
+
     
     # Public method notifyFlagUnset
     # Arguments:
@@ -107,6 +109,9 @@ class pyControl:
     # Returns the gamefield for usage in places other than the controller.
     def getGameField(self):
         return self.gameField
+
+    def createHighscoreEntry(self, username, score):
+        pass
 
     # Private method __createField
     # Arguments:

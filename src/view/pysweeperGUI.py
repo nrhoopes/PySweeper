@@ -21,6 +21,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import PhotoImage
+from tkinter import StringVar
 from PIL import Image, ImageTk
 
 class pysweeper:
@@ -255,8 +256,37 @@ class pysweeper:
     def notifyWin(self):
         self.controller.stopTimer()
         tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
+        # Update high scores
+        self.newHighscore()
         self.clearFrame(self.mainFrame)
         self.populateMainMenu()
+
+    def newHighscore(self):
+        self.highScoreEntryWin = tk.Toplevel()
+        
+        congratsLabel = tk.Label(self.highScoreEntryWin, font=('', 19), text="Congratulations! Your time was: " + str(self.controller.time) + " seconds.\nEnter your intitials for the scoreboard!:")
+        congratsLabel.grid(row=0, column=0, columnspan=2)
+
+        self.username = StringVar()
+        self.usernameEntry = tk.Entry(self.highScoreEntryWin, justify='center', width=20, font=('Arial', 26), textvariable=self.username)
+        self.username.trace("w", lambda *args: self.__charLimit(self.username))
+        self.usernameEntry.grid(row=1, column=0, columnspan=2)
+
+        enterButton = tk.Button(self.highScoreEntryWin, text="Enter", font=('', 30), command=lambda: self.__sendUsername(self.username.get(), self.controller.time))
+        enterButton.grid(row=2, column=0, sticky="e")
+
+        cancelButton = tk.Button(self.highScoreEntryWin, text="Cancel", font=('', 30), command=lambda: self.highScoreEntryWin.destroy())
+        cancelButton.grid(row=2, column=1, sticky="w")
+
+
+    def __charLimit(self, username):
+        if len(username.get()) > 0:
+            username.set(username.get()[:3].upper())
+
+    def __sendUsername(self, username, time):
+        
+        self.highScoreEntryWin.destroy()
+
 
     # Private method __gameLoss
     # Arguments:

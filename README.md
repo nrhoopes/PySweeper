@@ -4,8 +4,8 @@ A minesweeper clone, built in Python utilizing an MVC structure.
 # Python Version and Operating Systems
 - Developed on Python 3.10.12
 - Tested in Python 3.10, 3.11
-- Written for Debian Linux
-- Tested and functional in Windows 10
+- Written for Debian Linux (Verified working on Ubuntu)
+- Tested and functional in Windows 10 on 1080p screens.
 
 # Instructions for Running current build
 1. Clone Repository
@@ -35,6 +35,5 @@ chance of being a mine, resulting in anywhere between 35-45 mines being populate
 tile field.
 
 # Future Work:
-- Graphics and images for each of the numbers, mines, and buttons.
 - A High Score board for users to compete in speedrunning a minefield.
 - Multiple / User customized difficulty levels
