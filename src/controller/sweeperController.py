@@ -112,7 +112,11 @@ class pyControl:
         return self.gameField
 
     def createHighscoreEntry(self, username, score):
-        self.model.insertScore(username, score)
+        if (self.model.insertScore(username, score)):
+            self.gui.scoreHandshake(True)
+        else:
+            self.gui.scoreHandshake(False)
+        
 
     # Private method __createField
     # Arguments:

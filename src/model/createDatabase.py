@@ -30,7 +30,7 @@ class pyData:
         maxScoreID = self.conn.execute(''' SELECT MAX(scoreNum) FROM normalScores;''')
         
         status = self.conn.execute(''' INSERT INTO normalScores (scoreNum, username, score) VALUES (?, ?, ?);
-        ''', (list(maxScoreID)[0][0], username, score))
+        ''', (list(maxScoreID)[0][0] + 1, username, score))
 
         self.conn.commit()
 

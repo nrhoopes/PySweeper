@@ -258,8 +258,6 @@ class pysweeper:
         tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
         # Update high scores
         self.newHighscore()
-        self.clearFrame(self.mainFrame)
-        self.populateMainMenu()
 
     def newHighscore(self):
         self.highScoreEntryWin = tk.Toplevel()
@@ -277,6 +275,14 @@ class pysweeper:
 
         cancelButton = tk.Button(self.highScoreEntryWin, text="Cancel", font=('', 30), command=lambda: self.highScoreEntryWin.destroy())
         cancelButton.grid(row=2, column=1, sticky="w")
+
+    def scoreHandshake(self, success):
+        if not success:
+            tk.messagebox.showerror(title="Error!", message="Something has gone wrong with saving your score!")
+
+        self.clearFrame(self.mainFrame)
+        self.populateMainMenu()
+
 
 
     def __charLimit(self, username):
