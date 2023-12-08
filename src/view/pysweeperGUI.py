@@ -262,6 +262,7 @@ class pysweeper:
 
     def newHighscore(self):
         self.highScoreEntryWin = tk.Toplevel()
+        self.highScoreEntryWin.protocol('WM_DELETE_WINDOW', lambda: self.__cancelHighScore())
         
         congratsLabel = tk.Label(self.highScoreEntryWin, font=('', 19), text="Congratulations! Your time was: " + str(self.controller.time) + " seconds.\nEnter your intitials for the scoreboard!:")
         congratsLabel.grid(row=0, column=0, columnspan=2)
@@ -274,8 +275,12 @@ class pysweeper:
         enterButton = tk.Button(self.highScoreEntryWin, text="Enter", font=('', 30), command=lambda: self.__sendUsername(self.username.get(), self.controller.time))
         enterButton.grid(row=2, column=0, sticky="e")
 
-        cancelButton = tk.Button(self.highScoreEntryWin, text="Cancel", font=('', 30), command=lambda: self.highScoreEntryWin.destroy())
+        cancelButton = tk.Button(self.highScoreEntryWin, text="Cancel", font=('', 30), command=lambda: self.__cancelHighScore())
         cancelButton.grid(row=2, column=1, sticky="w")
+
+    def __cancelHighScore(self):
+        self.highScoreEntryWin.destroy()
+        self.scoreHandshake(True)
 
     def scoreHandshake(self, success):
         if not success:
