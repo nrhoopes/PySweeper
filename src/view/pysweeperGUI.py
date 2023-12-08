@@ -19,6 +19,7 @@
 #       gui.launch()
 
 import tkinter as tk
+import tkinter.ttk as ttk
 from tkinter import messagebox
 from tkinter import PhotoImage
 from tkinter import StringVar
@@ -280,8 +281,36 @@ class pysweeper:
         if not success:
             tk.messagebox.showerror(title="Error!", message="Something has gone wrong with saving your score!")
 
+        self.showScoreboard()
         self.clearFrame(self.mainFrame)
         self.populateMainMenu()
+
+    def showScoreboard(self):
+        self.scoreboardWin = tk.Toplevel()
+        scores = self.controller.getScoreboardInfo()
+
+        table = ttk.Treeview(self.scoreboardWin, columns=('Place', 'Player', 'Score'), show='headings')
+        table.heading('Place', text='Place')
+        table.heading('Player', text='Player')
+        table.heading('Score', text='Score')
+        table.column('Place', width=100, anchor='e')
+        table.column('Player', anchor='center')
+        table.column('Score', width=375, anchor='e')
+
+        self.style = ttk.Style()
+        self.style.theme_use("default")
+        self.style.configure("Treeview", rowheight=60, font=('', 20))
+
+        for pos, item in enumerate(scores):
+            item = list(item)
+            item[0] = pos + 1
+            item[2] = str(item[2]) + ' seconds'
+            table.insert('', tk.END, values=item)
+
+        highScoreTitle = tk.Label(self.scoreboardWin, text="High Scores!", font=('', 30))
+
+        highScoreTitle.grid(row=0, column=0)
+        table.grid(row=1, column=0, padx=5, pady=5)
 
 
 

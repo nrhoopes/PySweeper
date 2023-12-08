@@ -116,8 +116,10 @@ class pyControl:
             self.gui.scoreHandshake(True)
         else:
             self.gui.scoreHandshake(False)
-        
 
+    def getScoreboardInfo(self):
+        return list(self.model.retrieveTop10Scores())
+        
     # Private method __createField
     # Arguments:
     #   - rows: the number of rows to create

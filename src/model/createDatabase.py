@@ -28,9 +28,16 @@ class pyData:
 
     def insertScore(self, username, score):
         maxScoreID = self.conn.execute(''' SELECT MAX(scoreNum) FROM normalScores;''')
+        for i in maxScoreID:
+            maxScoreID = list(i)[0]
+            break
         
-        status = self.conn.execute(''' INSERT INTO normalScores (scoreNum, username, score) VALUES (?, ?, ?);
-        ''', (list(maxScoreID)[0][0] + 1, username, score))
+        if maxScoreID is not None:
+            status = self.conn.execute(''' INSERT INTO normalScores (scoreNum, username, score) VALUES (?, ?, ?);
+            ''', (maxScoreID + 1, username, score))
+        else:
+            status = self.conn.execute(''' INSERT INTO normalScores (scoreNum, username, score) VALUES (?, ?, ?);
+            ''', (1, username, score))
 
         self.conn.commit()
 
