@@ -19,8 +19,10 @@
 #       gui.launch()
 
 import tkinter as tk
+import tkinter.ttk as ttk
 from tkinter import messagebox
 from tkinter import PhotoImage
+from tkinter import StringVar
 from PIL import Image, ImageTk
 
 class pysweeper:
@@ -107,13 +109,15 @@ class pysweeper:
         descLabel.grid(row=1, column=0, padx=25)
 
         playGameButton = tk.Button(self.mainFrame, text="Play Game", font=('Arial', 56), width=10, command=lambda: self.controller.startGame())
+        highScoreButton = tk.Button(self.mainFrame, text="High Scores", font=('Arial', 56), width=10, command=lambda: self.showScoreboard())
         quitGameButton = tk.Button(self.mainFrame, text="Quit Game", font=('Arial', 56), width=10, command=lambda: self.root.destroy())
 
         dummySpace = tk.Label(self.mainFrame, text="")
         dummySpace.grid(row=2, column=0, pady=25, padx=25)
 
         playGameButton.grid(row=3, column=0, pady=25, padx=25)
-        quitGameButton.grid(row=4, column=0, pady=25, padx=25)
+        highScoreButton.grid(row=4, column=0, pady=25, padx=25)
+        quitGameButton.grid(row=5, column=0, pady=25, padx=25)
 
     # Public method assignController
     # Arguments:
@@ -255,8 +259,105 @@ class pysweeper:
     def notifyWin(self):
         self.controller.stopTimer()
         tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
+        # Check to see if a new score is valid.
+        if self.controller.checkIfScoreValid():
+            # Update high scores
+            self.newHighscore()
+        else:
+            self.clearFrame(self.mainFrame)
+            self.populateMainMenu()
+            self.showScoreboard()
+
+    # Public method newHighscore
+    #
+    # Notifies the controller to create a new highscore after crosschecking with the controller
+    # if the score should be valid or not.
+    def newHighscore(self):
+        self.highScoreEntryWin = tk.Toplevel()
+        self.highScoreEntryWin.protocol('WM_DELETE_WINDOW', lambda: self.__cancelHighScore())
+        
+        congratsLabel = tk.Label(self.highScoreEntryWin, font=('', 19), text="Congratulations! Your time was: " + str(self.controller.time) + " seconds.\nEnter your intitials for the scoreboard!:")
+        congratsLabel.grid(row=0, column=0, columnspan=2)
+
+        self.username = StringVar()
+        self.usernameEntry = tk.Entry(self.highScoreEntryWin, justify='center', width=20, font=('Arial', 26), textvariable=self.username)
+        self.username.trace("w", lambda *args: self.__charLimit(self.username))
+        self.usernameEntry.grid(row=1, column=0, columnspan=2)
+
+        enterButton = tk.Button(self.highScoreEntryWin, text="Enter", font=('', 30), command=lambda: self.__sendUsername(self.username.get(), self.controller.time))
+        enterButton.grid(row=2, column=0, sticky="e")
+
+        cancelButton = tk.Button(self.highScoreEntryWin, text="Cancel", font=('', 30), command=lambda: self.__cancelHighScore())
+        cancelButton.grid(row=2, column=1, sticky="w")
+
+    # Private method __cancelHighScore
+    #
+    # Cancels the high score placement if the user either presses 'cancel' or closes
+    # the window out.
+    def __cancelHighScore(self):
+        self.highScoreEntryWin.destroy()
+        self.scoreHandshake(True)
+
+    # Public method scoreHandshake
+    # Arguments:
+    #   - success: A boolean value of whether or not the score was correctly place in the DB.
+    def scoreHandshake(self, success):
+        if not success:
+            tk.messagebox.showerror(title="Error!", message="Something has gone wrong with saving your score!")
+
+        self.showScoreboard()
         self.clearFrame(self.mainFrame)
         self.populateMainMenu()
+
+    # Public method showScoreboard
+    # 
+    # Displays a popup window with the top 10 scores in it related to the
+    # difficulty of the puzzle.
+    def showScoreboard(self):
+        self.scoreboardWin = tk.Toplevel()
+        scores = self.controller.getScoreboardInfo()
+
+        table = ttk.Treeview(self.scoreboardWin, columns=('Place', 'Player', 'Score'), show='headings')
+        table.heading('Place', text='Place')
+        table.heading('Player', text='Player')
+        table.heading('Score', text='Score')
+        table.column('Place', width=100, anchor='e')
+        table.column('Player', anchor='center')
+        table.column('Score', width=375, anchor='e')
+
+        self.style = ttk.Style()
+        self.style.theme_use("default")
+        self.style.configure("Treeview", rowheight=60, font=('', 20))
+
+        for pos, item in enumerate(scores):
+            item = list(item)
+            item[0] = pos + 1
+            item[2] = str(item[2]) + ' seconds'
+            table.insert('', tk.END, values=item)
+
+        highScoreTitle = tk.Label(self.scoreboardWin, text="High Scores!", font=('', 30))
+
+        highScoreTitle.grid(row=0, column=0)
+        table.grid(row=1, column=0, padx=5, pady=5)
+
+    # Private method __charLimit
+    # Arguments:
+    #   - username: The username to check the length of.
+    #
+    # __charLimit will limit the user to a length of 3 characters for a username when
+    # entering it into the high score popup.
+    def __charLimit(self, username):
+        if len(username.get()) > 0:
+            username.set(username.get()[:3].upper())
+
+    # Private method __sendUsername
+    # Arguments:
+    #   - username: the username entered by the user
+    #   - time: The user's score 
+    def __sendUsername(self, username, time):
+        self.controller.createHighscoreEntry(username, time)
+        self.highScoreEntryWin.destroy()
+
 
     # Private method __gameLoss
     # Arguments:
