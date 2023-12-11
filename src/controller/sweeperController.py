@@ -119,6 +119,17 @@ class pyControl:
 
     def getScoreboardInfo(self):
         return list(self.model.retrieveTop10Scores())
+
+    def checkIfScoreValid(self):
+        scores = list(self.model.retrieveTop10Scores())
+        print(len(scores))
+        if len(scores) < 10:
+            return True
+        elif scores[9][2] > self.time:
+            print(scores[9][2])
+            return True
+        else:
+            return False
         
     # Private method __createField
     # Arguments:

@@ -259,8 +259,14 @@ class pysweeper:
     def notifyWin(self):
         self.controller.stopTimer()
         tk.messagebox.showinfo(parent=self.root, title="Victory!", message="Congratulations! You cleared the Minefield!")
-        # Update high scores
-        self.newHighscore()
+        # Check to see if a new score is valid.
+        if self.controller.checkIfScoreValid():
+            # Update high scores
+            self.newHighscore()
+        else:
+            self.clearFrame(self.mainFrame)
+            self.populateMainMenu()
+            self.showScoreboard()
 
     def newHighscore(self):
         self.highScoreEntryWin = tk.Toplevel()
