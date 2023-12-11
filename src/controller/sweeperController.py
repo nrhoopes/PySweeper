@@ -111,15 +111,35 @@ class pyControl:
     def getGameField(self):
         return self.gameField
 
+    # Public method createHighscoreEntry
+    # Arguments:
+    #   - username: the username of the player
+    #   - score: the score the player achieved
+    #
+    # createHighscoreEntry will notify the model that it needs to 
+    # add a new entry with the username and score that has been passed
+    # into the method.  If it goes ok, it will handshake ok with the GUI,
+    # otherwise it will fail the handshake.
     def createHighscoreEntry(self, username, score):
         if (self.model.insertScore(username, score)):
             self.gui.scoreHandshake(True)
         else:
             self.gui.scoreHandshake(False)
 
+    # Public method getScoreboardInfo
+    # 
+    # getScoreboardInfo acts as a link between the view and the model
+    # in order to retreive the top 10 scores for the GUI to display on
+    # the scoreboard.
     def getScoreboardInfo(self):
         return list(self.model.retrieveTop10Scores())
 
+    # Public method checkIfScoreValid
+    #
+    # After winning a game, the controller will evaluate whether or not
+    # the score achieved by the player is a valid score to be put on the leaderboards.
+    # It does this by grabbing the top 10 scores and validating that the score
+    # just achieved by the player belongs there
     def checkIfScoreValid(self):
         scores = list(self.model.retrieveTop10Scores())
         print(len(scores))

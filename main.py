@@ -7,9 +7,10 @@ from src.model.createDatabase import pyData
 # Create a GUI
 game = pysweeper()
 
+# Create a DB model
 model = pyData()
 
-# Create a controller object and pass the GUI in.
+# Create a controller object and pass the GUI and model in.
 controller = pyControl(game, model)
 
 # Assign the controller to the GUI using the built in function.

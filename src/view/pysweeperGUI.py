@@ -268,6 +268,10 @@ class pysweeper:
             self.populateMainMenu()
             self.showScoreboard()
 
+    # Public method newHighscore
+    #
+    # Notifies the controller to create a new highscore after crosschecking with the controller
+    # if the score should be valid or not.
     def newHighscore(self):
         self.highScoreEntryWin = tk.Toplevel()
         self.highScoreEntryWin.protocol('WM_DELETE_WINDOW', lambda: self.__cancelHighScore())
@@ -286,10 +290,17 @@ class pysweeper:
         cancelButton = tk.Button(self.highScoreEntryWin, text="Cancel", font=('', 30), command=lambda: self.__cancelHighScore())
         cancelButton.grid(row=2, column=1, sticky="w")
 
+    # Private method __cancelHighScore
+    #
+    # Cancels the high score placement if the user either presses 'cancel' or closes
+    # the window out.
     def __cancelHighScore(self):
         self.highScoreEntryWin.destroy()
         self.scoreHandshake(True)
 
+    # Public method scoreHandshake
+    # Arguments:
+    #   - success: A boolean value of whether or not the score was correctly place in the DB.
     def scoreHandshake(self, success):
         if not success:
             tk.messagebox.showerror(title="Error!", message="Something has gone wrong with saving your score!")
@@ -298,6 +309,10 @@ class pysweeper:
         self.clearFrame(self.mainFrame)
         self.populateMainMenu()
 
+    # Public method showScoreboard
+    # 
+    # Displays a popup window with the top 10 scores in it related to the
+    # difficulty of the puzzle.
     def showScoreboard(self):
         self.scoreboardWin = tk.Toplevel()
         scores = self.controller.getScoreboardInfo()
@@ -325,12 +340,20 @@ class pysweeper:
         highScoreTitle.grid(row=0, column=0)
         table.grid(row=1, column=0, padx=5, pady=5)
 
-
-
+    # Private method __charLimit
+    # Arguments:
+    #   - username: The username to check the length of.
+    #
+    # __charLimit will limit the user to a length of 3 characters for a username when
+    # entering it into the high score popup.
     def __charLimit(self, username):
         if len(username.get()) > 0:
             username.set(username.get()[:3].upper())
 
+    # Private method __sendUsername
+    # Arguments:
+    #   - username: the username entered by the user
+    #   - time: The user's score 
     def __sendUsername(self, username, time):
         self.controller.createHighscoreEntry(username, time)
         self.highScoreEntryWin.destroy()
