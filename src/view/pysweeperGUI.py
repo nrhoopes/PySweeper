@@ -109,13 +109,15 @@ class pysweeper:
         descLabel.grid(row=1, column=0, padx=25)
 
         playGameButton = tk.Button(self.mainFrame, text="Play Game", font=('Arial', 56), width=10, command=lambda: self.controller.startGame())
+        highScoreButton = tk.Button(self.mainFrame, text="High Scores", font=('Arial', 56), width=10, command=lambda: self.showScoreboard())
         quitGameButton = tk.Button(self.mainFrame, text="Quit Game", font=('Arial', 56), width=10, command=lambda: self.root.destroy())
 
         dummySpace = tk.Label(self.mainFrame, text="")
         dummySpace.grid(row=2, column=0, pady=25, padx=25)
 
         playGameButton.grid(row=3, column=0, pady=25, padx=25)
-        quitGameButton.grid(row=4, column=0, pady=25, padx=25)
+        highScoreButton.grid(row=4, column=0, pady=25, padx=25)
+        quitGameButton.grid(row=5, column=0, pady=25, padx=25)
 
     # Public method assignController
     # Arguments:
